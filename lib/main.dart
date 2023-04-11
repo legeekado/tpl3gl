@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projet1/interfaces/cgu.dart';
+import 'package:projet1/interfaces/pwd.dart';
 
 import 'interfaces/home.dart';
 import 'interfaces/auth.dart';
@@ -31,9 +33,11 @@ class _AppGlState extends State<AppGl> {
         // is not restarted.
         primarySwatch: Colors.red,
       ),
-      home: AuthScreen(
-        greettings: "Salutations à tout le monde qui ont des ",
-      ),
+      home: Home(),
+      //   home: CguScreen(
+      //     onNext: (index) {},
+      //     // greettings: "Salutations à tout le monde qui ont des ",
+      //   ),
     );
   }
 }

@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key, this.greettings = ""});
+  final Function(int) onNext;
+  const AuthScreen({super.key, required this.onNext});
 
-  final String greettings;
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final GlobalKey<FormState> _formGlobalKey = GlobalKey<FormState>();
+
+  String adr_email = "";
+  final RegExp emailRegExp = RegExp(r"[a-z0-9\._-]+@[a-z0-9\._-]+\.[a-z]+");
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        // appBar: AppBar(),
         body: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
@@ -68,6 +73,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: 50.0,
                 ),
                 Form(
+                  key: _formGlobalKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -78,7 +84,18 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 10.0,
                       ),
                       TextFormField(
-                        obscureText: true,
+                        onChanged: (value) {
+                          setState(() {
+                            adr_email = value;
+                          });
+
+                          // _formGlobalKey.currentState!.validate();
+                          print("input = ${adr_email}");
+                        },
+                        validator: (value) => adr_email.isEmpty ||
+                                !emailRegExp.hasMatch(adr_email)
+                            ? 'Vérifier l\'email saisi...'
+                            : null,
                         decoration: InputDecoration(
                           hintText: 'ex: bilal@groupe-isi.com',
                           border: OutlineInputBorder(
@@ -98,7 +115,17 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 10.0,
                       ),
                       ElevatedButton(
-                        onPressed: () => {print("Click sur le btn")},
+                        onPressed: adr_email.isEmpty ||
+                                !emailRegExp.hasMatch(adr_email)
+                            ? null
+                            : () {
+                                if (_formGlobalKey.currentState!.validate()) {
+                                  print('form validé');
+                                  widget.onNext(1);
+                                } else {
+                                  print('form non validé');
+                                }
+                              },
                         child: Text(
                           'Suivant'.toUpperCase(),
                         ),
